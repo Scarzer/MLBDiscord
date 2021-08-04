@@ -1,14 +1,14 @@
 from __future__ import print_function
 from os import strerror
-import mlbgame 
 import datetime
 from dataclasses import dataclass
-from mlbgame.events import Inning
 
-from mlbgame.stats import Stats 
+# Discord Imports for Embeds
+from discord import Embed
+
+# MLB Game imports
+import mlbgame 
 from mlbgame.game import GameScoreboard
-
-
 
 @dataclass
 class ScoreBoard():
@@ -70,27 +70,55 @@ class ScoreBoard():
         except:
             pass
                 
+def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
+    game_embed = Embed()
+    for games in games_to_format:
+        if games.game_status != "IN_PROGRESS":
+            continue
+        game_embed.add_field(value=games.game_id, inline=False,
+                name=f"{games.away_team_name} at {games.home_team_name}")
+        
+    return game_embed
 
 
+def get_games_today():
+    td = datetime.datetime.today()
+    yd = datetime.datetime.today() - datetime.timedelta(days=1)
 
-games = mlbgame.day(year=2021, month=8, day=3)
-
-for g in games:
-    try:
+    games_yesterday = mlbgame.day(year=yd.year, month=yd.month, day=yd.day)
+    games_today = mlbgame.day(year=td.year, month=td.month, day=td.day)
+    
+    games = games_today + games_yesterday
+    score_boards = []
+    for g in games:
         sb = ScoreBoard(g)
-        print(sb)
-        print(g.nice_score())
-        # game_events = mlbgame.game_events(g.game_id)
-        # for ev in game_events:
-        #     print(ev.nice_output())
-        #     print("Top")
-        #     for t in ev.top:
-        #         print(t.__dict__)
-        #     print("Bott")
-        #     for b in ev.bottom:
-        #         print(b.__dict__)
-        print("==============")
+        score_boards.append(sb)
+    
+    return score_boards
 
-    except IndexError as e:
-        print(f"Can't print out game events:{e}")
+if __name__ == "__main__":
+    for s in get_games_today():
+        if s.game_status == "IN_PROGRESS":
+            print(s)
+        elif s.game_status == "FINAL":
+            print(s)
+        elif s.game_status == "PRE_GAME":
+            print(s)
+        else:
+            print(f"Unknown game status: {s.game_status}")
 
+        print(s.game_status)
+
+"""
+# print(sb)
+# print(g.nice_score())
+# game_events = mlbgame.game_events(g.game_id)
+# for ev in game_events:
+#     print(ev.nice_output())
+#     print("Top")
+#     for t in ev.top:
+#         print(t.__dict__)
+#     print("Bott")
+#     for b in ev.bottom:
+#         print(b.__dict__
+"""
