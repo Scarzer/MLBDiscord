@@ -8,6 +8,8 @@ from mlbgame.events import Inning
 from mlbgame.stats import Stats 
 from mlbgame.game import GameScoreboard
 
+
+
 @dataclass
 class ScoreBoard():
 
@@ -68,6 +70,8 @@ class ScoreBoard():
         except:
             pass
                 
+
+
 
 games = mlbgame.day(year=2021, month=8, day=3)
 
