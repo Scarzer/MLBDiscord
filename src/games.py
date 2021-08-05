@@ -34,6 +34,7 @@ class ScoreBoard():
     game_leauge: str
     game_start_time: datetime.datetime
     events: list
+    score: str
 
     def __init__(self, mlb_game_sb: GameScoreboard) -> None:
         self.away_team_errors = mlb_game_sb.away_team_errors
@@ -50,6 +51,7 @@ class ScoreBoard():
         self.game_leauge      = mlb_game_sb.game_league
         self.game_start_time  = mlb_game_sb.game_start_time
         self.game_status      = mlb_game_sb.game_status
+        self.score            = mlb_game_sb.nice_score()
         self.events            = []
 
     def _populate_events(self):
@@ -75,7 +77,8 @@ def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
     for games in games_to_format:
         if games.game_status != "IN_PROGRESS":
             continue
-        game_embed.add_field(value=games.game_id, inline=False,
+        
+        game_embed.add_field(value=games.score, inline=False,
                 name=f"{games.away_team_name} at {games.home_team_name}")
         
     return game_embed
