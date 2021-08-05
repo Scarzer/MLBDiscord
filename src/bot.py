@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-from games import ScoreBoard, generate_game_list_embed, get_games_today
+from games import ScoreBoard, generate_active_game_list_embed, generate_game_list_embed, get_games_today
 
 ## Constants and ENV stuff
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
@@ -9,9 +9,15 @@ DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 bot = commands.Bot(command_prefix="%")
 
 @bot.command()
-async def list(context):
+async def list_all(context):
     sbs = get_games_today()
     emb = generate_game_list_embed(sbs)
+    await context.send(embed=emb)
+
+@bot.command()
+async def list(context):
+    sbs = get_games_today()
+    emb = generate_active_game_list_embed(sbs)
     await context.send(embed=emb)
 
 @bot.command()

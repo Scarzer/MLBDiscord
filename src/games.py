@@ -72,7 +72,7 @@ class ScoreBoard():
         except:
             pass
                 
-def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
+def generate_active_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
     game_embed = Embed()
     for games in games_to_format:
         if games.game_status != "IN_PROGRESS":
@@ -83,8 +83,21 @@ def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
         
     return game_embed
 
+def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
+    game_embed = Embed()
+    for games in games_to_format:
+        
+        game_embed.add_field(value=games.score, inline=False,
+                name=f"{games.away_team_name} at {games.home_team_name} -- [{games.game_status}]")
+        
+    return game_embed
+
 
 def get_games_today():
+    """ 
+        Grabs all of the games that are happening today and yesterday. 
+        Two days are grabbed to handle games running past midnight
+    """
     td = datetime.datetime.today()
     yd = datetime.datetime.today() - datetime.timedelta(days=1)
 
@@ -111,17 +124,3 @@ if __name__ == "__main__":
             print(f"Unknown game status: {s.game_status}")
 
         print(s.game_status)
-
-"""
-# print(sb)
-# print(g.nice_score())
-# game_events = mlbgame.game_events(g.game_id)
-# for ev in game_events:
-#     print(ev.nice_output())
-#     print("Top")
-#     for t in ev.top:
-#         print(t.__dict__)
-#     print("Bott")
-#     for b in ev.bottom:
-#         print(b.__dict__
-"""
