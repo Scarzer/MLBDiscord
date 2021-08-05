@@ -73,15 +73,12 @@ class ScoreBoard():
             pass
                 
 def generate_active_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
-    game_embed = Embed()
-    for games in games_to_format:
-        if games.game_status != "IN_PROGRESS":
+    active_games = []
+    for game in games_to_format:
+        if game.game_status != "IN_PROGRESS":
             continue
-        
-        game_embed.add_field(value=games.score, inline=False,
-                name=f"{games.away_team_name} at {games.home_team_name}")
-        
-    return game_embed
+        active_games.append(game)
+    return generate_game_list_embed(active_games)
 
 def generate_game_list_embed(games_to_format: list[ScoreBoard]) -> Embed:
     game_embed = Embed()
@@ -97,6 +94,8 @@ def get_games_today():
     """ 
         Grabs all of the games that are happening today and yesterday. 
         Two days are grabbed to handle games running past midnight
+
+        @TODO The MLB day starts at 5am EST. 
     """
     td = datetime.datetime.today()
     yd = datetime.datetime.today() - datetime.timedelta(days=1)
